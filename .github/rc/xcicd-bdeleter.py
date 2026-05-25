@@ -14,7 +14,7 @@ def main(args:list[str]) -> None:
     except Exception as e:
         print(e)
        
-if __name__ = "__main__":
+if __name__ == "__main__":
     
     if len(sys.argv) < 4:
         raise("missing arguments: \n branchdeleter \
