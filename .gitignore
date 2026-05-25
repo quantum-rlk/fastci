@@ -1,0 +1,8 @@
+*.swp
+*.swo
+*.swn
+*.log
+uv.lock
+.pytest_cache/
+__pycache__/
+xcicd.egg-info

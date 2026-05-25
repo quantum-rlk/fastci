@@ -1,0 +1,45 @@
+name: scan branch
+on: [push]
+
+env:
+  PYTHONPATH: src
+  FASTCITK: ${{ secrets.FASTCITK }}
+  IFASTCI: ${{ secrets.IFASTCI }}
+
+jobs:
+
+  ghcr_runner:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.FASTCITK }}
+
+    - name: Pull image
+        run: docker pull $${{ secrets.IFASTCI}}
+
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Scan branch
+      run: |
+        docker run --rm \
+        -v ${{ github.workspace }} : .github/rc \
+        -w .github/rc \
+        $${{ secrets.IFASTCI}} \
+        bash -c "
+        ls -la
+        python3.14 --version
+        python3.14 xcicd-bscanner.py ${{ github.repository }} ${{ github.ref }} "XY-214$ǜéTK"
+        "
+    # - name: Scan branch
+    #   id: scan_as
+    #   run: python3.10 .github/rc/branchscanner.py QSB 
+    #   continue-on-error: true
+
+    # - name: Dump corrupted branch
+    #   if: ${{ steps.scan_as.outcome != 'success' && github.ref != 'refs/heads/main' }}
+    #   run: python .github/rc/branchdeleter.py ${{ github.repository }} ${{ github.ref }} ${{ secrets.FRTK }}
