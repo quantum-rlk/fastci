@@ -30,8 +30,8 @@ jobs:
     - name: Scan branch
       run: |
         docker run --rm \
-        -v ${{ github.workspace }} : .github/rc \
-        -w .github/rc \
+        -v "${{ github.workspace }}:/workspace" \
+        -w /workspace/.github/rc \
         ghcr.io/quantum-rlk/islimci:1.0 \
         bash -c "
         ls -la

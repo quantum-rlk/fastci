@@ -1,0 +1,33 @@
+name: fast launcher 
+on:
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  PYTHONPATH: src
+  FASTCITK: ${{ secrets.FASTCITK }}
+  IFASTCI: ${{ secrets.IFASTCI }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/quantum-rlk/islimci:1.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.FASTCITK }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+        docker run --rm \
+        -v "${{ github.workspace }}:/workspace" \
+        -w /workspace/.github/rc \
+        ghcr.io/quantum-rlk/islimci:1.0 \
+        bash -c "
+        ls -la
+        python3.14 --version
+        python3.14 xcicd-bscanner.py ${{ github.repository }} ${{ github.ref }} "XY-214$ǜéTK"
+        "
