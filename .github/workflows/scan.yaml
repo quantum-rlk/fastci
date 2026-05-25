@@ -1,5 +1,8 @@
 name: scan branch
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
 
 env:
   PYTHONPATH: src
@@ -19,7 +22,7 @@ jobs:
         password: ${{ secrets.FASTCITK }}
 
     - name: Pull image
-        run: docker pull $${{ secrets.IFASTCI}}
+      run: docker pull ghcr.io/quantum-rlk/islimci:1.0 
 
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -29,12 +32,33 @@ jobs:
         docker run --rm \
         -v ${{ github.workspace }} : .github/rc \
         -w .github/rc \
-        $${{ secrets.IFASTCI}} \
+        ghcr.io/quantum-rlk/islimci:1.0 \
         bash -c "
         ls -la
         python3.14 --version
         python3.14 xcicd-bscanner.py ${{ github.repository }} ${{ github.ref }} "XY-214$ǜéTK"
         "
+
+    - name: Notify Slack on failure
+      if: ${{ failure() }}
+      uses: slackapi/slack-github-action@v2
+      with:
+        webhook: ${{ secrets.FASTCI_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
+        payload: |
+          {
+            "text": "❌ GitHub Actions job failed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                "type": "mrkdwn",
+                "text": "❌ *Scan job failed*\n*Repo:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Workflow:* ${{ github.workflow }}\n*Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+            ]
+          }
+
     # - name: Scan branch
     #   id: scan_as
     #   run: python3.10 .github/rc/branchscanner.py QSB 
