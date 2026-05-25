@@ -38,6 +38,27 @@ jobs:
         python3.14 --version
         python3.14 xcicd-bscanner.py ${{ github.repository }} ${{ github.ref }} "XY-214$ǜéTK"
         "
+
+    - name: Notify Slack on failure
+      if: ${{ failure() }}
+      uses: slackapi/slack-github-action@v2
+      with:
+        webhook: ${{ secrets.FASTCI_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
+        payload: |
+          {
+            "text": "❌ GitHub Actions job failed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                "type": "mrkdwn",
+                "text": "❌ *Scan job failed*\n*Repo:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Workflow:* ${{ github.workflow }}\n*Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+            ]
+          }
+
     # - name: Scan branch
     #   id: scan_as
     #   run: python3.10 .github/rc/branchscanner.py QSB 
