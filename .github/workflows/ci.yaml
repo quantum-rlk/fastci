@@ -3,13 +3,17 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - develop
+      - "**"
   pull_request:
 
 jobs:
   branch-scan:
     uses: quantum-rlk/fcicd/.github/workflows/scan.yaml@main
+    with:
+      project: FAI
+      repository: ${{ github.repository }}
+      branch: ${{ github.ref_name }}
+      label: ${{ github.event.head_commit.message }}
     secrets:
       FCITK: ${{ secrets.FASTCITK }}
       FCI_WEBHOOK_URL: ${{ secrets.FASTCI_WEBHOOK_URL }}
