@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  branch-scan:
+    uses: quantum-rlk/fcicd/.github/workflows/scan.yaml@main
+    secrets:
+      FCITK: ${{ secrets.FASTCITK }}
+      FCI_WEBHOOK_URL: ${{ secrets.FASTCI_WEBHOOK_URL }}
